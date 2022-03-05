@@ -9,6 +9,8 @@ public class Hand {
 	private Map<Card, Integer> cardsInHand;
 	
 	private Map<Card, Integer> cardsInPlay;
+
+	private Map<Card, Integer> cardsInGraveyard;
 	
 	private int probability = 1;
 
@@ -24,6 +26,11 @@ public class Hand {
 			cardsInHand.put(card, 0);
 			cardsInPlay.put(card, 0);
 		}
+	}
+	
+	public Hand duplicate() {
+		//TODO
+		return this;
 	}
 	
 	public int getProbability() {
@@ -77,7 +84,18 @@ public class Hand {
 		 * 
 		 * This card will be left in play. To prevent this and put it into graveyard instead, set parameter "consume" to true.
 		 */
-		return null;
+		
+		//the card either is in play or is not in play
+		//there's no random element here (content of play is predetermined)
+		if (cardsInPlay.get(card) >= 0) {
+			if (consume) {
+				cardsInPlay.put(card, cardsInPlay.get(card)-1);
+				cardsInGraveyard.put(card, cardsInGraveyard.get(card)+1);
+			}
+			return Stream.of(this);
+		} else {
+			return Stream.empty();
+		}
 	};
 	
 	public Stream<Hand> findCardInGrave(Card card) {
@@ -93,8 +111,19 @@ public class Hand {
 		/*
 		 * Return all hands where the board state is the same as here but there is a specific card already in graveyard.
 		 * 
-		 * This card will be left in graveyard. To prevent this and put it into exile instead, set parameter "consume" to true.
+		 * This card will be left in your graveyard. To prevent this and put it into exile instead, set parameter "consume" to true.
 		 */
-		return null;
+		
+		//the card either is in graveyard or is not in graveyard
+		//there's no random element here (content of graveyard is predetermined)
+		
+		if (cardsInGraveyard.get(card) >= 0) {
+			if (consume) {
+				cardsInGraveyard.put(card, cardsInGraveyard.get(card)-1);
+			}
+			return Stream.of(this);
+		} else {
+			return Stream.empty();
+		}
 	};
 }
